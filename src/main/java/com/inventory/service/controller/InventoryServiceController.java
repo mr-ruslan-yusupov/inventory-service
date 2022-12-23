@@ -1,18 +1,16 @@
 package com.inventory.service.controller;
 
-import com.inventory.service.service.*;
+import com.inventory.service.exceptions.BrandNotFoundException;
+import com.inventory.service.exceptions.CategoryNotFoundException;
 import com.inventory.service.model.Brand;
-import com.store.util.StoreConstants;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.inventory.service.model.Category;
+import com.inventory.service.service.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class InventoryServiceController {
@@ -44,7 +42,7 @@ public class InventoryServiceController {
         this.itemService = itemService;
     }
 
-    @RequestMapping(value = {"/","/inventory-service"}, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = {"/","/inventory"}, produces = MediaType.TEXT_PLAIN_VALUE)
     public String home() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n[Application info]");
@@ -54,25 +52,58 @@ public class InventoryServiceController {
         return sb.toString();
     }
 
-    @PostMapping(value = "/inventory-service/brand/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addBrand(@RequestBody Brand brand) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            Brand savedBrand = brandService.saveOrUpdateBrand(brand);
-            jsonObject.put("status", StoreConstants.SUCCESS_STATUS);
-            jsonObject.put("message", "Brand " + savedBrand.getBrandName() + " saved successfully");
-            return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
-        } catch (JSONException e) {
-            try {
-                jsonObject.put("status", StoreConstants.FAILURE_STATUS);
-                jsonObject.put("exception", e.getMessage());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-            return new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
-        }
+    /***********/
+    /** BRAND **/
+    /***********/
+
+    @PostMapping(value = "/inventory/brand/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Brand> addBrand(@RequestBody Brand brand) {
+        Brand savedBrand = brandService.saveOrUpdateBrand(brand);
+        return ResponseEntity.status(HttpStatus.CREATED).body(brand);
     }
 
+    @PutMapping(value = "/inventory/brand/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Brand> updateBrand(@RequestBody Brand brand) {
+        Brand savedBrand = brandService.saveOrUpdateBrand(brand);
+        return ResponseEntity.ok().body(brand);
+    }
 
+    @DeleteMapping(value = "/inventory/brand/delete/{brandId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteBrand(@PathVariable Long brandId) {
+        try {
+            brandService.deleteBranch(brandId);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new BrandNotFoundException("Not found brand with id: " + brandId);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    /**************/
+    /** CATEGORY **/
+    /**************/
+
+    @PostMapping(value = "/inventory/category/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
+        Category savedCategory = categoryService.saveOrUpdateCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
+    }
+
+    @PutMapping(value = "/inventory/category/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
+        Category savedCategory = categoryService.saveOrUpdateCategory(category);
+        return ResponseEntity.ok().body(category);
+    }
+
+    @DeleteMapping(value = "/inventory/category/delete/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+        try {
+            categoryService.deleteCategory(categoryId);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new CategoryNotFoundException("Not found category with id: " + categoryId);
+        }
+        return ResponseEntity.ok().build();
+    }
 
 }

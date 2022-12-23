@@ -25,4 +25,8 @@ public class BrandService {
     public Brand saveOrUpdateBrand(Brand brand) {
         return brandRepository.saveAndFlush(brand);
     }
+
+    public void deleteBranch(Long brandId) {
+        brandRepository.deleteById(brandId);
+    }
 }
