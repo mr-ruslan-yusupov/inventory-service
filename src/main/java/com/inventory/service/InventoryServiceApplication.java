@@ -37,7 +37,7 @@ public class InventoryServiceApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		if (brandService.findAllBrands().isEmpty()) {
 			Brand brand1 = new Brand("HP");
 			brandService.saveOrUpdateBrand(brand1);
@@ -62,13 +62,13 @@ public class InventoryServiceApplication implements CommandLineRunner {
 
 		if (storeService.findAllStorages().isEmpty()) {
 			Store store1 = new Store("Store Haifa","Haifa");
-			storeService.saveOrUpdateStorage(store1);
+			storeService.saveOrUpdateStore(store1);
 
 			Store store2 = new Store("Store Tel-aviv","Tel-aviv");
-			storeService.saveOrUpdateStorage(store2);
+			storeService.saveOrUpdateStore(store2);
 
 			Store store3 = new Store("Store Jerusalem","Jerusalem");
-			storeService.saveOrUpdateStorage(store3);
+			storeService.saveOrUpdateStore(store3);
 		}
 
 		if (productService.findAllProducts().isEmpty()) {
@@ -82,9 +82,9 @@ public class InventoryServiceApplication implements CommandLineRunner {
 			productService.saveOrUpdateProduct(product);
 		}
 
-		if (itemService.findAllStocks().isEmpty()) {
+		if (itemService.findAllItems().isEmpty()) {
 			Item item = new Item();
-			item.setProduct(productService.findProductByCatalogNumber("HP-TG01-2005NJ"));
+			item.setProduct(productService.findProductsByCatalogNumber("HP-TG01-2005NJ").get(0));
 			item.setStore(storeService.findStoreByName("Store Haifa"));
 			item.setQuantity(15);
 			itemService.saveOrUpdateStock(item);

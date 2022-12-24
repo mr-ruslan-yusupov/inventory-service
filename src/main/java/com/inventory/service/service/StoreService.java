@@ -22,8 +22,12 @@ public class StoreService {
         return storeRepository.findStoreByStoreName(storeName);
     }
 
-    public Store saveOrUpdateStorage(Store store) {
+    public Store saveOrUpdateStore(Store store) {
         return storeRepository.saveAndFlush(store);
+    }
+
+    public void deleteStore(Long storeId) {
+        storeRepository.deleteById(storeId);
     }
 
 }

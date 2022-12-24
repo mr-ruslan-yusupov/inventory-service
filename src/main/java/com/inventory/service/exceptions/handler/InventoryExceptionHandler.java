@@ -1,8 +1,6 @@
 package com.inventory.service.exceptions.handler;
 
-import com.inventory.service.exceptions.BrandNotFoundException;
-import com.inventory.service.exceptions.ItemNotFoundException;
-import com.inventory.service.exceptions.ServerException;
+import com.inventory.service.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,8 +19,28 @@ class InventoryExceptionHandler extends ResponseEntityExceptionHandler {
         return createExceptionResponse(HttpStatus.NOT_FOUND, request, ex);
     }
 
-    @ExceptionHandler(ItemNotFoundException.class)
-    public @ResponseBody ExceptionResponse handleItemNotFoundException(ItemNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(BrandNotEmptyException.class)
+    public @ResponseBody ExceptionResponse handleBrandNotEmptyException(BrandNotEmptyException ex, WebRequest request) {
+        return createExceptionResponse(HttpStatus.UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public @ResponseBody ExceptionResponse handleCategoryNotFoundException(CategoryNotFoundException ex, WebRequest request) {
+        return createExceptionResponse(HttpStatus.NOT_FOUND, request, ex);
+    }
+
+    @ExceptionHandler(CategoryNotEmptyException.class)
+    public @ResponseBody ExceptionResponse handleCategoryNotEmptyException(CategoryNotEmptyException ex, WebRequest request) {
+        return createExceptionResponse(HttpStatus.UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ExceptionHandler(StoreNotFoundException.class)
+    public @ResponseBody ExceptionResponse handleStoreNotFoundException(StoreNotFoundException ex, WebRequest request) {
+        return createExceptionResponse(HttpStatus.NOT_FOUND, request, ex);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public @ResponseBody ExceptionResponse handleProductNotFoundException(ProductNotFoundException ex, WebRequest request) {
         return createExceptionResponse(HttpStatus.NOT_FOUND, request, ex);
     }
 

@@ -5,6 +5,7 @@ import com.inventory.service.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ItemService {
@@ -14,8 +15,12 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public Collection<Item> findAllStocks() {
+    public Collection<Item> findAllItems() {
         return itemRepository.findAll();
+    }
+
+    public List<Item> findItemsByStore(Long storeId) {
+        return itemRepository.findItemsByStore(storeId);
     }
 
     public Item saveOrUpdateStock(Item item) {
